@@ -228,6 +228,13 @@ pipeline {
             }
         }
         
+        stage("Anchore Grype Docker Image Vulnerability Scan"){
+            steps{
+                sh "docker run --rm anchore/grype:v0.82.0 yash5090/tictactoetwo:latest"
+                sh "docker run --rm anchore/grype:v0.82.0 -o json yash5090/tictactoetwo:latest > grypescanreport.json"
+            }
+        }
+        
         stage('Docker Scout Artifacts Analysis') {
             steps {
                 script{
@@ -322,7 +329,7 @@ pipeline {
                 from: 'jenkins@example.com', 
                 replyTo: 'jenkins@example.com', 
                 mimeType: 'text/html', 
-                attachmentsPattern: 'trivy-image-report.html, trivyfs.txt, trivyimage.txt, snykvulnerabilityreport.txt, snykloadedvulnerabilityreport.txt') 
+                attachmentsPattern: 'trivy-image-report.html, trivyfs.txt, trivyimage.txt, snykvulnerabilityreport.txt, snykloadedvulnerabilityreport.txt, grypescanreport.json') 
             } 
         } 
     }
